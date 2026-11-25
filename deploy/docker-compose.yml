@@ -1,0 +1,14 @@
+# Local topology: hub in Docker with SQLite on a named volume (survives container restarts/recreates).
+# Nodes run natively on each laptop (python -m node.daemon) because they drive the host's Docker and hardware.
+# Cloud topology swaps this for Cloud Run + Firestore (MESH_LEDGER=firestore).
+services:
+  hub:
+    build: { context: .., dockerfile: deploy/Dockerfile.hub }
+    ports: ["8080:8080"]
+    environment:
+      MESH_LEDGER: sqlite
+      MESH_DB: /data/mesh.db
+    volumes: ["hub-data:/data"]
+    restart: unless-stopped
+volumes:
+  hub-data:

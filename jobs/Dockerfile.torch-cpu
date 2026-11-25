@@ -1,0 +1,6 @@
+# Job image for PyTorch CPU experiments. Build: docker build -f jobs/Dockerfile.torch-cpu -t experimentmesh/torch-cpu:0.1 jobs
+FROM python:3.12-slim
+RUN pip install --no-cache-dir torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cpu
+# Datasets are baked in at build time: job containers have no network access.
+RUN python -c "from torchvision import datasets; [datasets.FashionMNIST('/data', train=t, download=True) for t in (True, False)]" \
+    && chmod -R a+rX /data
